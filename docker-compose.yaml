@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  sample_postgres14:
+    # postgresql 공식 이미지
+    image: postgres:14
+    # 환경 변수 (규약된 것들)
+    environment:
+      TZ: Asia/Seoul
+      POSTGRES_DB: demo
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_INITDB_ARGS: '--encoding=UTF-8 --lc-collate=C --lc-ctype=C'
+    # 포트포워딩 (외부:내부)
+    ports:
+      # 외부: 변경해도 됨. 우리가 접속할 포트.
+      # 내부: 변경하면 안 되는 경우가 많음. 컨테이너 내에서 취급되는 포트.
+      - 5442:5432
+    # 연결할 폴더들 (외부:내부)
+    volumes:
+      # 콜론의 왼쪽에 내 PC의 로컬 경로를 써도 됨.
+      # 콜론의 왼쪽에 볼륨 컨테이너를 써도 됨.
+      - stick_volume_sample_postgres14:/var/lib/postgresql/data
+      - ./db/initdb.d:/docker-entrypoint-initdb.d:ro
+
+volumes:
+  stick_volume_sample_postgres14:
